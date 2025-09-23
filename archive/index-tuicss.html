@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NStarX Quick Links Portal</title>
+    
+    <!-- TuiCss CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tuicss@2.1.1/dist/tuicss.min.css">
+    
+    <style>
+        body {
+            background-color: #000084;
+            padding: 20px;
+            font-family: 'DOS', monospace;
+            min-height: 100vh;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.1) 2px,
+                    rgba(0, 0, 0, 0.1) 4px
+                );
+        }
+
+        .tui-window {
+            margin-bottom: 20px;
+            background-color: #c0c0c0;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-window {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #000084;
+            text-shadow: 2px 2px 0px #ffffff;
+            letter-spacing: 4px;
+            margin: 20px 0;
+            animation: blink 2s step-start infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.8; }
+        }
+
+        .subtitle {
+            color: #000000;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .links-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .link-window {
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .link-window:hover {
+            transform: translate(-2px, -2px);
+        }
+
+        .link-window .tui-window {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .link-content {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .icon-ascii {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #000084;
+            font-weight: bold;
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .link-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .link-description {
+            color: #404040;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            flex-grow: 1;
+        }
+
+        .link-url {
+            color: #000084;
+            font-size: 0.8rem;
+            word-break: break-all;
+            border-top: 1px dotted #808080;
+            padding-top: 10px;
+            margin-top: auto;
+        }
+
+        .badge-container {
+            margin-top: 10px;
+        }
+
+        .tui-statusbar {
+            background-color: #000084;
+            color: #ffffff;
+            margin-top: 10px;
+        }
+
+        /* ASCII Art Background */
+        .ascii-decoration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10rem;
+            color: rgba(0, 0, 132, 0.05);
+            z-index: -1;
+            font-weight: bold;
+            letter-spacing: 20px;
+            pointer-events: none;
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Custom scrollbar for DOS feel */
+        ::-webkit-scrollbar {
+            width: 16px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #c0c0c0;
+            border: 1px solid #000000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #000084;
+            border: 1px solid #ffffff;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .links-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .title-text {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Terminal cursor effect */
+        .cursor::after {
+            content: '_';
+            animation: cursor-blink 1s step-start infinite;
+            font-weight: bold;
+            color: #00ff00;
+        }
+
+        @keyframes cursor-blink {
+            50% { opacity: 0; }
+        }
+
+        /* DOS-style navigation bar */
+        .nav-bar {
+            background-color: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 2px;
+            margin-bottom: 20px;
+        }
+
+        .nav-item {
+            display: inline-block;
+            padding: 5px 15px;
+            margin: 2px;
+            background-color: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            cursor: pointer;
+            text-decoration: none;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .nav-item:hover {
+            background-color: #000084;
+            color: #ffffff;
+        }
+
+        .nav-item:active {
+            border-color: #808080 #ffffff #ffffff #808080;
+        }
+    </style>
+</head>
+<body>
+    <!-- ASCII Art Background -->
+    <div class="ascii-decoration">★</div>
+    
+    <div class="main-container">
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="#" class="nav-item" onclick="showAbout(); return false;">ABOUT</a>
+            <a href="#" class="nav-item" onclick="refreshPage(); return false;">REFRESH</a>
+            <a href="#" class="nav-item" onclick="showHelp(); return false;">HELP</a>
+        </div>
+
+        <!-- Header Window -->
+        <div class="tui-window red-168 header-window">
+            <fieldset class="tui-fieldset">
+                <legend class="center">═══ NSTARX PORTAL ═══</legend>
+                <div class="title-text">NSTARX<span class="cursor"></span></div>
+                <div class="subtitle">▓▒░ QUICK ACCESS TO ALL RESOURCES ░▒▓</div>
+                <div class="tui-divider"></div>
+                <p style="margin: 10px 0;">Welcome to the NStarX Portal Terminal Interface</p>
+                <p style="margin: 10px 0; color: #404040;">System Ready. Select a destination below.</p>
+            </fieldset>
+        </div>
+
+        <!-- Links Grid -->
+        <div class="links-container">
+            <!-- Documentation Link -->
+            <a href="https://nstarx.github.io/DLNP_Docs/" class="link-window" target="_blank">
+                <div class="tui-window cyan-168">
+                    <fieldset class="tui-fieldset">
+                        <legend>[ DOCUMENTATION ]</legend>
+                        <div class="link-content">
+                            <span class="icon-ascii">📚</span>
+                            <div class="link-title">Platform Docs</div>
+                            <div class="link-description">
+                                Comprehensive documentation for the NStarX platform, including setup guides, API references, and best practices.
+                            </div>
+                            <div class="link-url">» nstarx.github.io/DLNP_Docs</div>
+                            <div class="badge-container">
+                                <span class="tui-statusbar">
+                                    <ul>
+                                        <li>DOCS</li>
+                                        <li>READY</li>
+                                    </ul>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </a>
+
+            <!-- Current Demo Cluster -->
+            <a href="http://nstarx-converge.westus2.cloudapp.azure.com" class="link-window" target="_blank">
+                <div class="tui-window green-168">
+                    <fieldset class="tui-fieldset">
+                        <legend>[ LIVE DEMO ]</legend>
+                        <div class="link-content">
+                            <span class="icon-ascii">🖥️</span>
+                            <div class="link-title">Demo Cluster</div>
+                            <div class="link-description">
+                                Active demonstration cluster running the latest NStarX Converge platform with full feature set and integrations.
+                            </div>
+                            <div class="link-url">» nstarx-converge.westus2.cloudapp.azure.com</div>
+                            <div class="badge-container">
+                                <span class="tui-statusbar green-168">
+                                    <ul>
+                                        <li>LIVE</li>
+                                        <li>ONLINE</li>
+                                    </ul>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </a>
+
+            <!-- DigitalOcean Demo -->
+            <a href="https://nstarx-ljt7v.ondigitalocean.app/" class="link-window" target="_blank">
+                <div class="tui-window blue-168">
+                    <fieldset class="tui-fieldset">
+                        <legend>[ UI DEMO ]</legend>
+                        <div class="link-content">
+                            <span class="icon-ascii">☁️</span>
+                            <div class="link-title">DigitalOcean UI</div>
+                            <div class="link-description">
+                                Cloud-native demo interface deployed on DigitalOcean App Platform showcasing UI components and workflows.
+                            </div>
+                            <div class="link-url">» nstarx-ljt7v.ondigitalocean.app</div>
+                            <div class="badge-container">
+                                <span class="tui-statusbar blue-168">
+                                    <ul>
+                                        <li>UI</li>
+                                        <li>DEMO</li>
+                                    </ul>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </a>
+
+            <!-- Legacy Cluster -->
+            <a href="http://nstarx-ops-fe2.eastus.cloudapp.azure.com" class="link-window" target="_blank">
+                <div class="tui-window yellow-168">
+                    <fieldset class="tui-fieldset">
+                        <legend>[ LEGACY DEMO ]</legend>
+                        <div class="link-content">
+                            <span class="icon-ascii">💾</span>
+                            <div class="link-title">Legacy Cluster</div>
+                            <div class="link-description">
+                                Previous generation demonstration environment showcasing the older cluster configuration and deployment architecture.
+                            </div>
+                            <div class="link-url">» nstarx-ops-fe2.eastus.cloudapp.azure.com</div>
+                            <div class="badge-container">
+                                <span class="tui-statusbar yellow-168">
+                                    <ul>
+                                        <li>LEGACY</li>
+                                        <li>ARCHIVE</li>
+                                    </ul>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </a>
+
+            <!-- API Garden -->
+            <a href="https://nstarx.github.io/DLNP_API_Garden/" class="link-window" target="_blank">
+                <div class="tui-window purple-168">
+                    <fieldset class="tui-fieldset">
+                        <legend>[ API REFERENCE ]</legend>
+                        <div class="link-content">
+                            <span class="icon-ascii">🔌</span>
+                            <div class="link-title">API Design Hub</div>
+                            <div class="link-description">
+                                Central repository for API design patterns, specifications, and integration guidelines for the NStarX ecosystem.
+                            </div>
+                            <div class="link-url">» nstarx.github.io/DLNP_API_Garden</div>
+                            <div class="badge-container">
+                                <span class="tui-statusbar purple-168">
+                                    <ul>
+                                        <li>API</li>
+                                        <li>SPECS</li>
+                                    </ul>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </a>
+
+            <!-- Compliance Portal -->
+            <a href="https://nstarx.github.io/DLNP_Compliance/" class="link-window" target="_blank">
+                <div class="tui-window orange-168">
+                    <fieldset class="tui-fieldset">
+                        <legend>[ COMPLIANCE ]</legend>
+                        <div class="link-content">
+                            <span class="icon-ascii">🔒</span>
+                            <div class="link-title">Compliance Portal</div>
+                            <div class="link-description">
+                                Security compliance documentation, policies, and regulatory requirements for NStarX platform operations.
+                            </div>
+                            <div class="link-url">» nstarx.github.io/DLNP_Compliance</div>
+                            <div class="badge-container">
+                                <span class="tui-statusbar orange-168">
+                                    <ul>
+                                        <li>SECURE</li>
+                                        <li>COMPLIANT</li>
+                                    </ul>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </a>
+        </div>
+
+        <!-- Footer Status Bar -->
+        <div class="tui-window" style="margin-top: 40px;">
+            <div class="tui-statusbar">
+                <ul>
+                    <li>F1=Help</li>
+                    <li>F5=Refresh</li>
+                    <li>ESC=Exit</li>
+                    <li id="clock">--:--:--</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Clock functionality
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F1') {
+                e.preventDefault();
+                showHelp();
+            } else if (e.key === 'F5') {
+                e.preventDefault();
+                refreshPage();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                if (confirm('Exit portal?')) {
+                    window.close();
+                }
+            }
+        });
+
+        // Helper functions
+        function showAbout() {
+            alert('NStarX Portal v1.0\n\nTerminal Interface for NStarX Resources\n\n© 2024 NStarX Corporation\nAll Rights Reserved');
+        }
+
+        function showHelp() {
+            alert('NAVIGATION HELP\n\n• Click on any window to open the link\n• Use F1 for help\n• Use F5 to refresh\n• Press ESC to exit\n\nKEYBOARD SHORTCUTS:\n• Tab - Navigate between links\n• Enter - Open selected link\n• Alt+← - Go back');
+        }
+
+        function refreshPage() {
+            location.reload();
+        }
+
+        // Add retro sound effect on click (optional)
+        document.querySelectorAll('.link-window').forEach(link => {
+            link.addEventListener('mousedown', function() {
+                // Create a subtle click effect
+                this.style.transform = 'translate(-3px, -3px)';
+            });
+            link.addEventListener('mouseup', function() {
+                this.style.transform = 'translate(-2px, -2px)';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+
+        // Terminal typing effect for title on load
+        window.addEventListener('load', function() {
+            const titleElement = document.querySelector('.title-text');
+            const originalText = titleElement.textContent.replace('_', '');
+            titleElement.textContent = '';
+            let index = 0;
+            
+            function typeText() {
+                if (index < originalText.length) {
+                    titleElement.textContent = originalText.slice(0, index + 1);
+                    index++;
+                    setTimeout(typeText, 100);
+                } else {
+                    titleElement.innerHTML = originalText + '<span class="cursor"></span>';
+                }
+            }
+            
+            setTimeout(typeText, 500);
+        });
+
+        // Add ASCII art animation
+        const asciiChars = ['★', '◆', '■', '▲', '●', '✦', '◉', '◈'];
+        let currentChar = 0;
+        
+        setInterval(() => {
+            document.querySelector('.ascii-decoration').textContent = asciiChars[currentChar];
+            currentChar = (currentChar + 1) % asciiChars.length;
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+[
+  {
+    "number": 1,
+    "title": "Human Oversight is Essential",
+    "description": "Always review, test, and scan AI-generated code to maintain quality and security. Treat AI like a junior developer who needs supervision."
+  },
+  {
+    "number": 2,
+    "title": "Guide AI with Clear Prompts & Context",
+    "description": "Provide coding standards, project context, and detailed instructions to ensure useful and relevant AI-generated code. Document AI contributions for transparency."
+  },
+  {
+    "number": 3,
+    "title": "Keep Developers Actively Engaged",
+    "description": "To prevent skill atrophy, engineers should analyze, refactor, and fully understand AI-generated code instead of blindly accepting it."
+  },
+  {
+    "number": 4,
+    "title": "Update Agile & DevOps Workflows",
+    "description": "Modify sprint planning to include AI code validation. Enhance CI/CD pipelines with static analysis, security checks, and license compliance."
+  },
+  {
+    "number": 5,
+    "title": "Define AI Usage Guidelines",
+    "description": "Set company-wide rules for privacy, security, and ethical AI use. Train teams in prompt engineering and responsible AI-assisted coding."
+  },
+  {
+    "number": 6,
+    "title": "Balance Speed with Control",
+    "description": "AI accelerates development, but human oversight is key. Use AI to enhance efficiency while ensuring maintainability, security, and high-quality design."
+  }
+]

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NStarX Quick Links Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #1a0f2e;
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Isogrid background - very subtle */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('isogrid-large.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: -4;
+        }
+
+        /* Cardinal Compass Background */
+        .compass-background {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            pointer-events: none;
+            z-index: -3;
+            opacity: 0.5;
+        }
+
+        .compass-background svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .compass-background {
+                width: 400px;
+                height: 400px;
+            }
+        }
+
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 80% 50%, rgba(118, 75, 162, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(138, 92, 182, 0.3) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: -1;
+            mix-blend-mode: screen;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 
+                3px 3px 0 #667eea,
+                6px 6px 0 #764ba2,
+                9px 9px 0 rgba(0, 0, 0, 0.5),
+                9px 9px 10px rgba(0, 0, 0, 0.3);
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            transform: perspective(300px) rotateY(-5deg);
+            display: inline-block;
+            position: relative;
+        }
+
+        .header h1::after {
+            content: ' █';
+            position: absolute;
+            right: -50px;
+            top: 0;
+            color: #00ff00;
+            text-shadow: 
+                0 0 5px #00ff00,
+                0 0 10px #00ff00,
+                0 0 15px #00ff00,
+                3px 3px 0 #667eea,
+                6px 6px 0 #764ba2;
+            animation: blink 1s infinite;
+            font-size: 3rem;
+            transition: opacity 0.2s ease;
+            opacity: 1;
+        }
+        
+        .header h1.cursor-hidden::after {
+            opacity: 0;
+            animation: none;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 
+                2px 2px 0 rgba(102, 126, 234, 0.5),
+                4px 4px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 0;
+            padding: 30px;
+            box-shadow: 
+                4px 4px 0 rgba(0, 0, 0, 0.2),
+                8px 8px 0 rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            position: relative;
+            overflow: visible;
+            border: 2px solid #667eea;
+        }
+        
+        .link-card .hover-cursor {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #00ff00;
+            font-size: 2rem;
+            font-family: 'Courier New', monospace;
+            text-shadow: 
+                0 0 5px #00ff00,
+                0 0 10px #00ff00,
+                0 0 15px #00ff00,
+                2px 2px 0 #667eea;
+            z-index: 10;
+            pointer-events: none;
+            display: none;
+        }
+        
+        .link-card:hover .hover-cursor {
+            display: block;
+            animation: blink 1s infinite;
+        }
+
+        .link-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 4px,
+                    rgba(102, 126, 234, 0.05) 4px,
+                    rgba(102, 126, 234, 0.05) 8px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 4px,
+                    rgba(118, 75, 162, 0.05) 4px,
+                    rgba(118, 75, 162, 0.05) 8px
+                );
+            background-size: 8px 8px, 8px 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .link-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 
+                8px 8px 0 rgba(0, 0, 0, 0.3),
+                16px 16px 0 rgba(102, 126, 234, 0.2);
+            animation: pixelShift 0.3s infinite steps(4);
+        }
+
+        .link-card:hover::after {
+            opacity: 1;
+            animation: scanlines 1s infinite linear;
+        }
+
+        @keyframes pixelShift {
+            0% { background-position: 0 0; }
+            25% { background-position: 2px 0; }
+            50% { background-position: 2px 2px; }
+            75% { background-position: 0 2px; }
+            100% { background-position: 0 0; }
+        }
+
+        @keyframes scanlines {
+            0% { background-position: 0 0, 0 0; }
+            100% { background-position: 0 8px, 8px 0; }
+        }
+
+        .link-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                4px 4px 0 rgba(0, 0, 0, 0.3),
+                8px 8px 0 rgba(102, 126, 234, 0.2);
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            position: relative;
+            z-index: 2;
+        }
+
+        .icon-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 4px,
+                    rgba(255, 255, 255, 0.1) 4px,
+                    rgba(255, 255, 255, 0.1) 8px
+                );
+            pointer-events: none;
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            fill: white;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            filter: contrast(1.2);
+        }
+
+        .link-card h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-shadow: 
+                1px 1px 0 rgba(102, 126, 234, 0.3),
+                2px 2px 0 rgba(102, 126, 234, 0.1);
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .link-card .description {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .link-card .url {
+            color: #667eea;
+            font-size: 0.9rem;
+            word-break: break-all;
+            position: relative;
+            z-index: 2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border-radius: 0;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            border: 2px solid #667eea;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 2px 2px 0 rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>NStarX Portal</h1>
+            <p>Quick access to all NStarX resources and documentation</p>
+        </div>
+
+        <div class="links-grid">
+            <a href="https://nstarx.github.io/DLNP_Docs/" class="link-card" target="_blank">
+                <span class="hover-cursor">█</span>
+                <div class="icon-wrapper">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M13,17V18H7V17H13M17,14V15H7V14H17Z"/>
+                    </svg>
+                </div>
+                <h2>NStarX Platform Documentation</h2>
+                <p class="description">Comprehensive documentation for the NStarX platform, including setup guides, API references, and best practices.</p>
+                <p class="url">nstarx.github.io/DLNP_Docs</p>
+                <span class="badge">Documentation</span>
+            </a>
+
+            <a href="http://nstarx-converge.westus2.cloudapp.azure.com" class="link-card" target="_blank">
+                <span class="hover-cursor">█</span>
+                <div class="icon-wrapper">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M3,12V6.5L9,5.5L15,6.5V11.5L9,10.5L3,12M3,13L9,14.5L15,13V17L9,18L3,17V13M10,5.5V6.5L9,6.5L8,6.5V5.5L9,5.5H10M15,7.5L9,8.5L3,7.5V8.5L9,9.5L15,8.5V7.5M9,15.5L3,14.5V15.5L9,16.5L15,15.5V14.5L9,15.5M21,11.5V17L15,18V13L21,11.5M21,10.5L15,12V6.5L21,5.5V10.5Z"/>
+                    </svg>
+                </div>
+                <h2>Current Demo Cluster</h2>
+                <p class="description">Active demonstration cluster running the latest NStarX Converge platform with full feature set and integrations.</p>
+                <p class="url">nstarx-converge.westus2.cloudapp.azure.com</p>
+                <span class="badge">Live Demo</span>
+            </a>
+
+            <a href="https://nstarx-ljt7v.ondigitalocean.app/" class="link-card" target="_blank">
+                <span class="hover-cursor">█</span>
+                <div class="icon-wrapper">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z"/>
+                    </svg>
+                </div>
+                <h2>DigitalOcean Demo UI</h2>
+                <p class="description">Cloud-native demo interface deployed on DigitalOcean App Platform showcasing UI components and workflows.</p>
+                <p class="url">nstarx-ljt7v.ondigitalocean.app</p>
+                <span class="badge">UI Demo</span>
+            </a>
+
+            <a href="http://nstarx-ops-fe2.eastus.cloudapp.azure.com" class="link-card" target="_blank">
+                <span class="hover-cursor">█</span>
+                <div class="icon-wrapper">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M13.18,19C13.35,19.72 13.64,20.39 14.03,21H5C3.89,21 3,20.11 3,19V5C3,3.89 3.89,3 5,3H19C20.11,3 21,3.89 21,5V11.18C20.5,11.07 20,11 19.5,11C19.33,11 19.17,11 19,11.03V5H5V19H13.18M11,7H17V9H11V7M11,11H17V11.03C16.14,11.22 15.37,11.62 14.73,12.18H11V11M11,15H12.29C12.11,15.5 12,16 12,16.5C12,17 12.11,17.5 12.29,18H11V15M21.85,21.85L21.13,23L19.5,21.4L17.87,23L17.15,21.85L18.76,20.5L17.15,19.15L17.87,18L19.5,19.6L21.13,18L21.85,19.15L20.24,20.5L21.85,21.85Z"/>
+                    </svg>
+                </div>
+                <h2>Legacy Cluster Demo</h2>
+                <p class="description">Previous generation demonstration environment showcasing the older cluster configuration and deployment architecture.</p>
+                <p class="url">nstarx-ops-fe2.eastus.cloudapp.azure.com</p>
+                <span class="badge">Legacy Demo</span>
+            </a>
+
+            <a href="https://nstarx.github.io/DLNP_API_Garden/" class="link-card" target="_blank">
+                <span class="hover-cursor">█</span>
+                <div class="icon-wrapper">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M7,2V4H8V18A4,4 0 0,0 12,22A4,4 0 0,0 16,18V4H17V2H7M11,16C10.4,16 10,15.6 10,15C10,14.4 10.4,14 11,14C11.6,14 12,14.4 12,15C12,15.6 11.6,16 11,16M13,12C12.4,12 12,11.6 12,11C12,10.4 12.4,10 13,10C13.6,10 14,10.4 14,11C14,11.6 13.6,12 13,12M14,7H10V4H14V7Z"/>
+                    </svg>
+                </div>
+                <h2>API Design Documentation Hub</h2>
+                <p class="description">Central repository for API design patterns, specifications, and integration guidelines for the NStarX ecosystem.</p>
+                <p class="url">nstarx.github.io/DLNP_API_Garden</p>
+                <span class="badge">API Reference</span>
+            </a>
+
+            <a href="https://nstarx.github.io/DLNP_Compliance/" class="link-card" target="_blank">
+                <span class="hover-cursor">█</span>
+                <div class="icon-wrapper">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,5A3,3 0 0,1 15,8A3,3 0 0,1 12,11A3,3 0 0,1 9,8A3,3 0 0,1 12,5M17.13,17C15.92,18.85 14.11,20.24 12,20.92C9.89,20.24 8.08,18.85 6.87,17C6.53,16.5 6.24,16 6,15.47C6,13.82 8.71,12.47 12,12.47C15.29,12.47 18,13.79 18,15.47C17.76,16 17.47,16.5 17.13,17Z"/>
+                    </svg>
+                </div>
+                <h2>Compliance Portal</h2>
+                <p class="description">Security compliance documentation, policies, and regulatory requirements for NStarX platform operations.</p>
+                <p class="url">nstarx.github.io/DLNP_Compliance</p>
+                <span class="badge">Compliance</span>
+            </a>
+        </div>
+    </div>
+    <!-- Cardinal Compass Background -->
+    <div class="compass-background">
+        <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer Circle -->
+            <circle cx="300" cy="300" r="280" fill="none" stroke="#667eea" stroke-width="3" opacity="0.8"/>
+            <circle cx="300" cy="300" r="250" fill="none" stroke="#764ba2" stroke-width="2" opacity="0.6"/>
+            <circle cx="300" cy="300" r="220" fill="none" stroke="#667eea" stroke-width="2" opacity="0.4"/>
+            
+            <!-- Cardinal Lines -->
+            <!-- North-South -->
+            <line x1="300" y1="50" x2="300" y2="550" stroke="#667eea" stroke-width="4" opacity="0.9"/>
+            <!-- East-West -->
+            <line x1="50" y1="300" x2="550" y2="300" stroke="#667eea" stroke-width="4" opacity="0.9"/>
+            
+            <!-- Diagonal Lines -->
+            <line x1="100" y1="100" x2="500" y2="500" stroke="#764ba2" stroke-width="2" opacity="0.5"/>
+            <line x1="500" y1="100" x2="100" y2="500" stroke="#764ba2" stroke-width="2" opacity="0.5"/>
+            
+            <!-- Cardinal Points -->
+            <!-- North -->
+            <g transform="translate(300, 50)">
+                <polygon points="0,-20 -15,15 0,5 15,15" fill="#667eea" opacity="1"/>
+                <text x="0" y="-30" text-anchor="middle" font-family="Courier New, monospace" font-size="32" font-weight="bold" fill="#667eea" opacity="1">N</text>
+            </g>
+            
+            <!-- South -->
+            <g transform="translate(300, 550)">
+                <polygon points="0,20 -15,-15 0,-5 15,-15" fill="#667eea" opacity="0.8"/>
+                <text x="0" y="40" text-anchor="middle" font-family="Courier New, monospace" font-size="32" font-weight="bold" fill="#667eea" opacity="1">S</text>
+            </g>
+            
+            <!-- East -->
+            <g transform="translate(550, 300)">
+                <polygon points="20,0 -15,-15 -5,0 -15,15" fill="#667eea" opacity="0.8"/>
+                <text x="35" y="7" text-anchor="middle" font-family="Courier New, monospace" font-size="32" font-weight="bold" fill="#667eea" opacity="1">E</text>
+            </g>
+            
+            <!-- West -->
+            <g transform="translate(50, 300)">
+                <polygon points="-20,0 15,-15 5,0 15,15" fill="#667eea" opacity="0.8"/>
+                <text x="-35" y="7" text-anchor="middle" font-family="Courier New, monospace" font-size="32" font-weight="bold" fill="#667eea" opacity="1">W</text>
+            </g>
+            
+            <!-- Center Star (North Star) -->
+            <g transform="translate(300, 300)">
+                <!-- Outer star glow -->
+                <circle cx="0" cy="0" r="40" fill="url(#starGradient)" opacity="0.6"/>
+                <!-- Star shape -->
+                <path d="M 0,-25 L 6,-8 L 25,-4 L 9,9 L 12,25 L 0,15 L -12,25 L -9,9 L -25,-4 L -6,-8 Z" 
+                      fill="#00ff00" opacity="1" stroke="#00ff00" stroke-width="2" filter="url(#glow)"/>
+                <!-- Inner star -->
+                <circle cx="0" cy="0" r="8" fill="#00ff00" opacity="1"/>
+            </g>
+            
+            <!-- Gradient Definition -->
+            <defs>
+                <radialGradient id="starGradient">
+                    <stop offset="0%" stop-color="#00ff00" stop-opacity="1"/>
+                    <stop offset="50%" stop-color="#667eea" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#764ba2" stop-opacity="0"/>
+                </radialGradient>
+                
+                <!-- Glow filter for star -->
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                
+                <!-- Subtle grid pattern -->
+                <pattern id="gridPattern" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
+                    <line x1="0" y1="0" x2="0" y2="50" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+                    <line x1="0" y1="0" x2="50" y2="0" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+                </pattern>
+            </defs>
+            
+            <!-- Background grid -->
+            <rect x="0" y="0" width="600" height="600" fill="url(#gridPattern)"/>
+            
+            <!-- Decorative compass marks -->
+            <g transform="translate(300, 300)">
+                <!-- 30 degree marks -->
+                <g opacity="0.5">
+                    <line x1="0" y1="-180" x2="0" y2="-200" stroke="#667eea" stroke-width="2" transform="rotate(30)"/>
+                    <line x1="0" y1="-180" x2="0" y2="-200" stroke="#667eea" stroke-width="2" transform="rotate(60)"/>
+                    <line x1="0" y1="-180" x2="0" y2="-200" stroke="#667eea" stroke-width="2" transform="rotate(120)"/>
+                    <line x1="0" y1="-180" x2="0" y2="-200" stroke="#667eea" stroke-width="2" transform="rotate(150)"/>
+                    <line x1="0" y1="-180" x2="0" y2="-200" stroke="#667eea" stroke-width="2" transform="rotate(210)"/>
+                    <line x1="0" y1="-180" x2="0" y2="-200" stroke="#667eea" stroke-width="2" transform="rotate(240)"/>
+                    <line x1="0" y1="-180" x2="0" y2="-200" stroke="#667eea" stroke-width="2" transform="rotate(300)"/>
+                    <line x1="0" y1="-180" x2="0" y2="-200" stroke="#667eea" stroke-width="2" transform="rotate(330)"/>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <script>
+        // Add subtle rotation animation to compass on page load
+        window.addEventListener('load', () => {
+            const compass = document.querySelector('.compass-background svg');
+            if (compass) {
+                compass.style.transition = 'transform 2s ease-out';
+                setTimeout(() => {
+                    compass.style.transform = 'rotate(360deg)';
+                }, 100);
+                setTimeout(() => {
+                    compass.style.transition = '';
+                    compass.style.transform = '';
+                }, 2100);
+            }
+        });
+        
+        // Add cursor movement on hover
+        const headerTitle = document.querySelector('.header h1');
+        let hoveredCards = 0;
+        
+        document.querySelectorAll('.link-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                hoveredCards++;
+                
+                // Hide title cursor when hovering a card
+                headerTitle.classList.add('cursor-hidden');
+                
+                // Add subtle pulse to compass when hovering cards
+                const compass = document.querySelector('.compass-background');
+                if (compass) {
+                    compass.style.transition = 'opacity 0.3s ease';
+                    compass.style.opacity = '0.7';
+                }
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                hoveredCards--;
+                
+                // Show title cursor when not hovering any card
+                if (hoveredCards === 0) {
+                    headerTitle.classList.remove('cursor-hidden');
+                }
+                
+                // Reset compass opacity
+                const compass = document.querySelector('.compass-background');
+                if (compass) {
+                    compass.style.opacity = '0.5';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

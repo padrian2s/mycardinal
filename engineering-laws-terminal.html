@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Laws - Terminal Mode</title>
+        <!-- Common CSS -->
+    <link rel="stylesheet" href="assets/css/common.css">
+
+    <style>
+
+        body {
+            font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+            background: #000;
+            color: #00ff00;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.2;
+        }
+
+        /* ASCII Background Pattern */
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            font-size: 10px;
+            line-height: 10px;
+            color: #003300;
+            white-space: pre;
+            font-family: 'Courier New', monospace;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 100ch;
+            margin: 0 auto;
+            padding: 2ch;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4ch;
+            border: double 3px #00ff00;
+            padding: 2ch;
+            position: relative;
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .header h1 {
+            color: #00ff00;
+            font-size: 1.5em;
+            text-transform: uppercase;
+            letter-spacing: 0.5ch;
+            margin-bottom: 1ch;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .header .subtitle {
+            color: #008800;
+            font-size: 0.9em;
+        }
+
+        .terminal-prompt {
+            color: #00ff00;
+            margin-bottom: 2ch;
+        }
+
+        .terminal-prompt::before {
+            content: '> ';
+            color: #00ff00;
+        }
+
+        .laws-container {
+            margin-bottom: 2ch;
+        }
+
+        .law-card {
+            border: solid 1px #00ff00;
+            padding: 2ch;
+            margin-bottom: 2ch;
+            position: relative;
+            background: rgba(0, 0, 0, 0.95);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+        }
+
+        .law-card::before {
+            content: '+------------------------------------------------------------------------------------------------+';
+            position: absolute;
+            top: -1ch;
+            left: 0;
+            color: #006600;
+            font-size: 0.8em;
+        }
+
+        .law-card::after {
+            content: '+------------------------------------------------------------------------------------------------+';
+            position: absolute;
+            bottom: -1ch;
+            left: 0;
+            color: #006600;
+            font-size: 0.8em;
+        }
+
+        .law-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1ch;
+            padding-bottom: 0.5ch;
+            border-bottom: 1px dashed #008800;
+        }
+
+        .law-number {
+            color: #00ff00;
+            font-weight: bold;
+            margin-right: 2ch;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .law-number::before {
+            content: '[';
+        }
+
+        .law-number::after {
+            content: ']';
+        }
+
+        .law-title {
+            color: #00ff00;
+            font-weight: bold;
+            text-transform: uppercase;
+            flex: 1;
+        }
+
+        .law-description {
+            color: #00cc00;
+            padding-left: 4ch;
+            line-height: 1.4;
+        }
+
+        .overview-panel {
+            border: double 3px #00ff00;
+            padding: 2ch;
+            margin-bottom: 3ch;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.95);
+            position: relative;
+        }
+
+        .overview-panel h2 {
+            color: #00ff00;
+            margin-bottom: 1ch;
+            text-transform: uppercase;
+            letter-spacing: 0.3ch;
+        }
+
+        .overview-panel p {
+            color: #00cc00;
+            margin-bottom: 2ch;
+            line-height: 1.5;
+        }
+
+        .stats-grid {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            border-top: 1px dashed #008800;
+            padding-top: 1ch;
+        }
+
+        .stat-item {
+            flex: 1;
+        }
+
+        .stat-number {
+            color: #00ff00;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .stat-label {
+            color: #008800;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 10ch 2ch;
+            color: #00ff00;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .error {
+            border: solid 1px #ff0000;
+            color: #ff0000;
+            padding: 2ch;
+            text-align: center;
+            margin: 4ch 0;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        /* Terminal cursor effect */
+        .cursor {
+            display: inline-block;
+            width: 1ch;
+            height: 1.2em;
+            background: #00ff00;
+            animation: cursor-blink 1s infinite;
+        }
+
+        @keyframes cursor-blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        /* CRT screen effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* Scanline effect */
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 255, 0, 0.1), transparent);
+            z-index: 3;
+            pointer-events: none;
+            animation: scanline 6s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-pattern" id="bgPattern"></div>
+    <div class="scanline"></div>
+    
+    <div class="container">
+        <div class="header">
+            <pre style="color: #006600; font-size: 0.7em; margin-bottom: 1ch;">
+╔════════════════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                            ║
+║     ███████╗███╗   ██╗ ██████╗ ██╗███╗   ██╗███████╗███████╗██████╗ ██╗███╗   ██╗ ██████╗║
+║     ██╔════╝████╗  ██║██╔════╝ ██║████╗  ██║██╔════╝██╔════╝██╔══██╗██║████╗  ██║██╔════╝║
+║     █████╗  ██╔██╗ ██║██║  ███╗██║██╔██╗ ██║█████╗  █████╗  ██████╔╝██║██╔██╗ ██║██║  ███╗
+║     ██╔══╝  ██║╚██╗██║██║   ██║██║██║╚██╗██║██╔══╝  ██╔══╝  ██╔══██╗██║██║╚██╗██║██║   ██║
+║     ███████╗██║ ╚████║╚██████╔╝██║██║ ╚████║███████╗███████╗██║  ██║██║██║ ╚████║╚██████╔╝
+║     ╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝ 
+║                                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════════════════════╝
+            </pre>
+            <h1>ENGINEERING LAWS</h1>
+            <p class="subtitle">[ AI-ASSISTED DEVELOPMENT PROTOCOLS ]</p>
+        </div>
+
+        <div class="terminal-prompt">SYSTEM: Loading Engineering Laws Database...</div>
+
+        <div id="content">
+            <div class="loading">ACCESSING SECURE DATABASE...<span class="cursor"></span></div>
+        </div>
+    </div>
+
+    <script>
+        // Generate background pattern
+        function generateBackgroundPattern() {
+            const pattern = document.getElementById('bgPattern');
+            const chars = ['╱', '╲', '╳', '╱', '╲'];
+            const width = Math.ceil(window.innerWidth / 10);
+            const height = Math.ceil(window.innerHeight / 10);
+            let bgText = '';
+            
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    // Create crosshatch pattern similar to screenshot
+                    if ((x + y) % 2 === 0) {
+                        bgText += '╱╲';
+                    } else {
+                        bgText += '╲╱';
+                    }
+                }
+                bgText += '\n';
+            }
+            
+            pattern.textContent = bgText;
+        }
+
+        // Load engineering laws
+        async function loadEngineeringLaws() {
+            const contentDiv = document.getElementById('content');
+            
+            // Simulate terminal loading
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            try {
+                const response = await fetch('engineering-law.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ERROR: ${response.status}`);
+                }
+                
+                const laws = await response.json();
+                
+                // Clear loading message
+                contentDiv.innerHTML = '';
+                
+                // Add system message
+                const sysMsg = document.createElement('div');
+                sysMsg.className = 'terminal-prompt';
+                sysMsg.textContent = 'SYSTEM: Database loaded successfully. Displaying ' + laws.length + ' core laws.';
+                contentDiv.appendChild(sysMsg);
+                
+                // Create overview panel
+                const overviewPanel = document.createElement('div');
+                overviewPanel.className = 'overview-panel';
+                overviewPanel.innerHTML = `
+                    <pre style="color: #006600; font-size: 0.8em;">
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                                   CORE PRINCIPLES                                       │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+                    </pre>
+                    <h2>[ SYSTEM OVERVIEW ]</h2>
+                    <p>These fundamental laws guide the responsible integration of AI tools in software 
+engineering, ensuring quality, security, and human expertise remain paramount.</p>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">${laws.length}</div>
+                            <div class="stat-label">Core Laws</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Human Oversight</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Active Monitoring</div>
+                        </div>
+                    </div>
+                `;
+                contentDiv.appendChild(overviewPanel);
+                
+                // Create laws container
+                const lawsContainer = document.createElement('div');
+                lawsContainer.className = 'laws-container';
+                
+                // Add section header
+                const sectionHeader = document.createElement('div');
+                sectionHeader.className = 'terminal-prompt';
+                sectionHeader.textContent = 'LOADING LAW MODULES...';
+                lawsContainer.appendChild(sectionHeader);
+                
+                laws.forEach((law, index) => {
+                    setTimeout(() => {
+                        const lawCard = document.createElement('div');
+                        lawCard.className = 'law-card';
+                        lawCard.innerHTML = `
+                            <div class="law-header">
+                                <span class="law-number">LAW-${String(law.number).padStart(2, '0')}</span>
+                                <span class="law-title">${law.title}</span>
+                            </div>
+                            <div class="law-description">> ${law.description}</div>
+                        `;
+                        lawsContainer.appendChild(lawCard);
+                    }, index * 200);
+                });
+                
+                contentDiv.appendChild(lawsContainer);
+                
+                // Add terminal prompt at the end
+                setTimeout(() => {
+                    const endPrompt = document.createElement('div');
+                    endPrompt.className = 'terminal-prompt';
+                    endPrompt.innerHTML = 'SYSTEM: All laws loaded. Ready for implementation.<span class="cursor"></span>';
+                    contentDiv.appendChild(endPrompt);
+                }, laws.length * 200 + 500);
+                
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <div class="error">
+                        <pre>
+╔════════════════════════════════════════════════════════════════════╗
+║                         SYSTEM ERROR                               ║
+╠════════════════════════════════════════════════════════════════════╣
+║  ERROR CODE: 0x${Math.random().toString(16).substr(2, 8).toUpperCase()}                                      ║
+║  MESSAGE: ${error.message.padEnd(55)}  ║
+║  ACTION: Check engineering-law.json file location                  ║
+╚════════════════════════════════════════════════════════════════════╝
+                        </pre>
+                    </div>
+                `;
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            generateBackgroundPattern();
+            loadEngineeringLaws();
+        });
+        
+        // Regenerate pattern on resize
+        window.addEventListener('resize', generateBackgroundPattern);
+    </script>
+    <!-- Common JavaScript -->
+    <script src="assets/js/common.js"></script>
+</body>
+</html>
