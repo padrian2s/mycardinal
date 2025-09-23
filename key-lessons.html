@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Lessons - Life's Essential Wisdom</title>
+
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="assets/css/common.css">
+
+    <style>
+        /* Zen-inspired minimalist design */
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(180deg, #f8f7f4 0%, #e8e5df 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #2c2c2c;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Subtle animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 69, 19, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(139, 69, 19, 0.02) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+            animation: breathe 15s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Header with elegant typography */
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeIn 1s ease;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            letter-spacing: 6px;
+            margin-bottom: 20px;
+            color: #2c2c2c;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+        }
+
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8b4513, transparent);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #6b6b6b;
+            font-style: italic;
+            letter-spacing: 1px;
+            margin-top: 30px;
+        }
+
+        /* Attribution */
+        .attribution {
+            text-align: center;
+            margin-bottom: 60px;
+            font-size: 0.9rem;
+            color: #8b4513;
+            opacity: 0.8;
+        }
+
+        .attribution a {
+            color: #8b4513;
+            text-decoration: none;
+            border-bottom: 1px dotted #8b4513;
+            transition: all 0.3s ease;
+        }
+
+        .attribution a:hover {
+            border-bottom-style: solid;
+            opacity: 1;
+        }
+
+        /* Lessons Grid */
+        .lessons-grid {
+            display: grid;
+            gap: 40px;
+            animation: fadeInUp 1s ease;
+        }
+
+        /* Individual Lesson Card */
+        .lesson-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 69, 19, 0.1);
+            padding: 40px;
+            position: relative;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #8b4513, #d4a574);
+            transform: scaleY(0);
+            transition: transform 0.4s ease;
+            transform-origin: bottom;
+        }
+
+        .lesson-card:hover {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 40px rgba(139, 69, 19, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .lesson-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        /* Lesson Number */
+        .lesson-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 3rem;
+            font-weight: 100;
+            color: rgba(139, 69, 19, 0.1);
+            font-family: 'Georgia', serif;
+        }
+
+        /* Lesson Title */
+        .lesson-title {
+            font-size: 1.6rem;
+            font-weight: 400;
+            color: #2c2c2c;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #4a4a4a;
+            font-family: 'Georgia', serif;
+        }
+
+        /* Source Citation */
+        .lesson-source {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #8b4513;
+            opacity: 0.6;
+            font-style: italic;
+            text-align: right;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .nav-bar a {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(139, 69, 19, 0.2);
+            color: #8b4513;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-bar a:hover {
+            background: #8b4513;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+                letter-spacing: 3px;
+            }
+
+            .lesson-card {
+                padding: 25px;
+            }
+
+            .lesson-title {
+                font-size: 1.3rem;
+            }
+
+            .lesson-content {
+                font-size: 1rem;
+            }
+
+            .nav-bar {
+                position: static;
+                text-align: center;
+                margin-bottom: 40px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Decorative elements */
+        .divider {
+            text-align: center;
+            margin: 60px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '❦';
+            font-size: 2rem;
+            color: rgba(139, 69, 19, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <a href="index.html">← Back to Portal</a>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Key Lessons</h1>
+            <p class="subtitle">Essential Wisdom from a Life Well Lived</p>
+        </div>
+
+        <div class="attribution">
+            Wisdom sourced from <a href="https://edwardpackard.com" target="_blank">edwardpackard.com</a>
+        </div>
+
+        <div class="lessons-grid">
+            <div class="lesson-card">
+                <span class="lesson-number">01</span>
+                <h2 class="lesson-title">Gratitude for Life's Simplicities</h2>
+                <p class="lesson-content">
+                    Appreciating small joys — kindness, beauty, health — matters a lot more than big achievements.
+                    Over a long life, these accumulate.
+                </p>
+                <div class="lesson-source">edwardpackard.com</div>
+            </div>
+
+            <div class="lesson-card">
+                <span class="lesson-number">02</span>
+                <h2 class="lesson-title">Humility and Acceptance</h2>
+                <p class="lesson-content">
+                    Recognizing one's limitations, accepting what can't be changed, and not being ashamed of weaknesses.
+                    Such acceptance brings peace.
+                </p>
+                <div class="lesson-source">edwardpackard.com</div>
+            </div>
+
+            <div class="lesson-card">
+                <span class="lesson-number">03</span>
+                <h2 class="lesson-title">Vulnerability is Strength</h2>
+                <p class="lesson-content">
+                    Being open, admitting mistakes, letting others see you as you are — these are important.
+                    Vulnerability builds connection and authenticity.
+                </p>
+                <div class="lesson-source">edwardpackard.com</div>
+            </div>
+
+            <div class="lesson-card">
+                <span class="lesson-number">04</span>
+                <h2 class="lesson-title">Lifelong Learning</h2>
+                <p class="lesson-content">
+                    Never stop being curious. Read, explore, talk to people different from you.
+                    The world keeps changing, and learning keeps us alive in it.
+                </p>
+                <div class="lesson-source">edwardpackard.com</div>
+            </div>
+
+            <div class="lesson-card">
+                <span class="lesson-number">05</span>
+                <h2 class="lesson-title">Relationships Over Success</h2>
+                <p class="lesson-content">
+                    Friendships, family, love — these matter more than titles or professional success.
+                    In the end, relationships are what we carry.
+                </p>
+                <div class="lesson-source">edwardpackard.com</div>
+            </div>
+
+            <div class="lesson-card">
+                <span class="lesson-number">06</span>
+                <h2 class="lesson-title">Resilience in Adversity</h2>
+                <p class="lesson-content">
+                    Hard times will come. How you cope — perseverance, adaptability, maintaining hope —
+                    counts more than the hardships themselves.
+                </p>
+                <div class="lesson-source">edwardpackard.com</div>
+            </div>
+
+            <div class="lesson-card">
+                <span class="lesson-number">07</span>
+                <h2 class="lesson-title">Generosity and Kindness</h2>
+                <p class="lesson-content">
+                    Giving — whether of one's time, compassion, understanding — enriches both giver and receiver.
+                    Even small kindnesses have big ripple effects.
+                </p>
+                <div class="lesson-source">edwardpackard.com</div>
+            </div>
+
+            <div class="lesson-card">
+                <span class="lesson-number">08</span>
+                <h2 class="lesson-title">Balance and Moderation</h2>
+                <p class="lesson-content">
+                    Avoid extremes. Take care of physical, mental, emotional needs.
+                    Living too far on any edge (work, pleasure, risk) tends to cause regret.
+                </p>
+                <div class="lesson-source">edwardpackard.com</div>
+            </div>
+
+            <div class="lesson-card">
+                <span class="lesson-number">09</span>
+                <h2 class="lesson-title">Legacy and Mindfulness</h2>
+                <p class="lesson-content">
+                    Consider what you leave behind — not just materially, but in the way you treated people,
+                    the memories, the impact. Be mindful of how you spend your days.
+                </p>
+                <div class="lesson-source">edwardpackard.com</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+    </div>
+
+    <script>
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.8s ease forwards';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all lesson cards
+        document.querySelectorAll('.lesson-card').forEach(card => {
+            card.style.opacity = '0';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
