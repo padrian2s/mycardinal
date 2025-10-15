@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Themes</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/themes.css">
+    <link id="tuicss-stylesheet" rel="stylesheet" href="https://unpkg.com/tuicss@2.1.1/dist/tuicss.min.css" data-theme-stylesheet disabled>
+    <style>
+        body { padding: 40px; }
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 10000;
+        }
+        .controls button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            cursor: pointer;
+            border: 2px solid #667eea;
+            background: white;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .controls button:hover {
+            background: #667eea;
+            color: white;
+        }
+        .test-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="modern-theme">
+    <div class="controls">
+        <h3 style="margin-top: 0;">Test Themes</h3>
+        <button onclick="testTheme('modern')">Modern</button>
+        <button onclick="testTheme('terminal')">Terminal</button>
+        <button onclick="testTheme('retro')">Retro</button>
+        <button onclick="testTheme('neon')">Neon</button>
+        <button onclick="testTheme('glassmorphism')">Glassmorphism</button>
+        <button onclick="testTheme('carnival')">Carnival</button>
+        <button onclick="testTheme('tuicss')">TuiCSS</button>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #ddd;">
+            <strong>Current:</strong> <span id="currentTheme">modern</span>
+        </div>
+    </div>
+
+    <div class="test-content">
+        <div class="header">
+            <h1>Theme Test Page</h1>
+            <p>Click buttons on the right to test different themes</p>
+        </div>
+
+        <div class="quick-links" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 40px;">
+            <a href="#" class="link-card">
+                <div class="card-icon">🖥️</div>
+                <div class="card-content">
+                    <h3>Test Card 1</h3>
+                    <p>This is a test card to see how themes look</p>
+                    <span class="badge green-168">Server</span>
+                </div>
+                <div class="status-badge online">
+                    <span class="status-dot"></span>
+                    <span class="status-label">Online</span>
+                </div>
+            </a>
+
+            <a href="#" class="link-card">
+                <div class="card-icon">🔒</div>
+                <div class="card-content">
+                    <h3>Test Card 2</h3>
+                    <p>Another test card with different styling</p>
+                    <span class="badge orange-168">Firewall</span>
+                </div>
+                <div class="status-badge checking">
+                    <span class="status-dot"></span>
+                    <span class="status-label">Checking</span>
+                </div>
+            </a>
+
+            <a href="#" class="link-card">
+                <div class="card-icon">🛡️</div>
+                <div class="card-content">
+                    <h3>Test Card 3</h3>
+                    <p>Third test card to see variety</p>
+                    <span class="badge cyan-168">DNS</span>
+                </div>
+                <div class="status-badge offline">
+                    <span class="status-dot"></span>
+                    <span class="status-label">Offline</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function testTheme(theme) {
+            // Remove all theme classes
+            document.body.className = '';
+
+            // Disable all theme stylesheets
+            const themeSheets = document.querySelectorAll('[data-theme-stylesheet]');
+            themeSheets.forEach(sheet => sheet.disabled = true);
+
+            // Apply selected theme
+            switch(theme) {
+                case 'tuicss':
+                    const tuiSheet = document.getElementById('tuicss-stylesheet');
+                    if (tuiSheet) tuiSheet.disabled = false;
+                    document.body.classList.add('tuicss-theme');
+                    break;
+                case 'retro':
+                    document.body.classList.add('retro-theme');
+                    break;
+                case 'terminal':
+                    document.body.classList.add('terminal-theme');
+                    break;
+                case 'neon':
+                    document.body.classList.add('neon-theme');
+                    break;
+                case 'glassmorphism':
+                    document.body.classList.add('glassmorphism-theme');
+                    break;
+                case 'carnival':
+                    document.body.classList.add('carnival-mode');
+                    break;
+                default:
+                    document.body.classList.add('modern-theme');
+            }
+
+            document.getElementById('currentTheme').textContent = theme;
+            console.log('Applied theme:', theme, 'Body classes:', document.body.className);
+        }
+
+        // Apply modern theme on load
+        window.addEventListener('DOMContentLoaded', () => {
+            testTheme('modern');
+        });
+    </script>
+</body>
+</html>

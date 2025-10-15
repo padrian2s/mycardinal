@@ -315,3 +315,10 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Project specific
+.serena/
+*.backup
+*.bak
+index.html.backup
+.DS_Store
+Thumbs.db

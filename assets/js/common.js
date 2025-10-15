@@ -14,8 +14,8 @@ function initializeApp() {
         }, 500);
     }
 
-    // Initialize theme from localStorage
-    const savedTheme = localStorage.getItem('selectedTheme') || 'modern';
+    // Initialize theme from localStorage (TuiCSS is now default)
+    const savedTheme = localStorage.getItem('selectedTheme') || 'tuicss';
     applyTheme(savedTheme);
 
     // Initialize status checking if needed
@@ -26,30 +26,25 @@ function initializeApp() {
 
 // Theme Management
 function applyTheme(theme) {
-    document.body.className = '';
+    // TuiCSS is now the primary theme
+    // Always apply TuiCSS background class
+    document.body.className = 'tui-bg-black-white';
 
     // Remove all theme stylesheets
     const themeSheets = document.querySelectorAll('[data-theme-stylesheet]');
     themeSheets.forEach(sheet => sheet.disabled = true);
 
-    // Apply selected theme
+    // Apply selected theme (TuiCSS is always enabled)
     switch(theme) {
         case 'tuicss':
+        case 'terminal':
             const tuiSheet = document.getElementById('tuicss-stylesheet');
             if (tuiSheet) tuiSheet.disabled = false;
-            document.body.classList.add('tuicss-theme');
+            document.body.classList.add('terminal-mode');
             break;
         case 'retro':
-            document.body.classList.add('retro-theme');
-            break;
-        case 'terminal':
-            document.body.classList.add('terminal-theme');
-            break;
-        case 'neon':
-            document.body.classList.add('neon-theme');
-            break;
-        case 'glassmorphism':
-            document.body.classList.add('glassmorphism-theme');
+        case 'western':
+            document.body.classList.add('western-mode');
             break;
         case 'carnival':
             document.body.classList.add('carnival-mode');
@@ -57,8 +52,13 @@ function applyTheme(theme) {
                 startCarnivalMode();
             }
             break;
+        case 'neon':
+        case 'glassmorphism':
+        case 'modern':
         default:
-            document.body.classList.add('modern-theme');
+            // TuiCSS is the default now
+            document.body.classList.add('tui-mode');
+            break;
     }
 
     // Save theme preference
@@ -72,13 +72,10 @@ function createThemeSelector() {
     selector.innerHTML = `
         <button class="theme-toggle" onclick="toggleThemeMenu()">🎨 Theme</button>
         <div class="theme-menu hidden" id="themeMenu">
-            <button onclick="applyTheme('modern')">Modern</button>
-            <button onclick="applyTheme('retro')">Retro</button>
-            <button onclick="applyTheme('terminal')">Terminal</button>
-            <button onclick="applyTheme('neon')">Neon</button>
-            <button onclick="applyTheme('glassmorphism')">Glass</button>
-            <button onclick="applyTheme('tuicss')">TuiCSS</button>
-            <button onclick="applyTheme('carnival')">Carnival</button>
+            <button onclick="selectTheme('modern')">Modern</button>
+            <button onclick="selectTheme('western')">Western</button>
+            <button onclick="selectTheme('terminal')">Terminal</button>
+            <button onclick="selectTheme('carnival')">Carnival</button>
         </div>
     `;
     document.body.appendChild(selector);
@@ -88,6 +85,15 @@ function toggleThemeMenu() {
     const menu = document.getElementById('themeMenu');
     if (menu) {
         menu.classList.toggle('hidden');
+    }
+}
+
+function selectTheme(theme) {
+    applyTheme(theme);
+    // Close menu after selection
+    const menu = document.getElementById('themeMenu');
+    if (menu) {
+        menu.classList.add('hidden');
     }
 }
 
